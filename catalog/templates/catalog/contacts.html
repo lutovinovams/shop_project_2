@@ -1,4 +1,11 @@
+{# catalog/templates/catalog/contacts.html #}
 {% extends 'catalog/base.html' %}
+
+{% comment %}
+Шаблон страницы контактной информации и обратной связи.
+Отображает таблицу с реквизитами организации Skystore и форму для отправки
+пользовательских сообщений, обрабатываемую POST-запросом контроллера.
+{% endcomment %}
 
 {% block title %}Контакты - Skystore{% endblock %}
 
@@ -36,7 +43,7 @@
                     <h4 class="my-0 font-weight-normal text-center">Свяжитесь с нами</h4>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="" class="form-floating">
+                    <form method="post" action="">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="name" class="form-label">Имя</label>
@@ -50,7 +57,7 @@
                             <label for="message" class="form-label">Сообщение</label>
                             <textarea name="message" class="form-control" id="message" rows="3" placeholder="Ваше сообщение..." required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-lg btn-block btn-outline-primary w-100">Отправить</button>
+                        <button type="submit" class="btn btn-lg btn-outline-primary w-100">Отправить</button>
                     </form>
                 </div>
             </div>

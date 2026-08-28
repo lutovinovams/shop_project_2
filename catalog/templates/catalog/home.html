@@ -1,4 +1,11 @@
+{# catalog/templates/catalog/home.html #}
 {% extends 'catalog/base.html' %}
+
+{% comment %}
+Шаблон главной страницы каталога Skystore.
+Выводит приветственный баннер интернет-магазина и сетку с доступными
+для покупки программными продуктами, плагинами или примерами кода.
+{% endcomment %}
 
 {% block title %}Главная - Skystore{% endblock %}
 
@@ -18,12 +25,12 @@
                 <div class="card-body">
                     <h1 class="card-title pricing-card-title">$ 140</h1>
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Неограниченная лицензия</li>
-                        <li>- Поддержка</li>
-                        <li>- Установка на сервер</li>
-                        <li>- Получение обновлений</li>
+                        <li>Неограниченная лицензия</li>
+                        <li>Поддержка</li>
+                        <li>Установка на server</li>
+                        <li>Получение обновлений</li>
                     </ul>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary w-100">Купить</button>
+                    <button type="button" class="btn btn-lg btn-outline-primary w-100">Купить</button>
                 </div>
             </div>
         </div>
