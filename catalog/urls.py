@@ -1,8 +1,7 @@
 from django.urls import path
-from . import views
+from catalog.views import home, contacts
 
-# Здесь будут храниться маршруты для каталога товаров
 urlpatterns = [
-    # Пример пустого маршрута (главная страница каталога)
-    # path('', views.home, name='home'),
+    path('', home, name='home'),
+    path('contacts/', contacts, name='contacts'),
 ]
