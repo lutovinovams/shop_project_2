@@ -1,0 +1,13 @@
+[
+    {
+        "pk": 1,
+        "model": "catalog.product",
+        "fields": {
+            "name": "Ноутбук",
+            "description": "Мощный рабочий ноутбук",
+            "image": null,
+            "category": 1,
+            "price": "75000.00"
+        }
+    }
+]
