@@ -2,13 +2,25 @@ import json
 from django.core.management.base import BaseCommand
 from catalog.models import Category, Product
 
+
 class Command(BaseCommand):
-    help = 'Очищает БД и загружает тестовые данные из фикстур JSON'
+    """
+    Кастомная команда для полной очистки БД и ее наполнения тестовыми данными из фикстур.
+    """
+    help = 'Очищает базу данных и загружает тестовые данные из фикстур JSON'
 
     @staticmethod
     def _load_json_data(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        """
+        Вспомогательный метод для чтения JSON-файла фикстуры с автоопределением кодировки Windows.
+        """
+        with open(file_path, 'rb') as f:
+            content = f.read()
+        if content.startswith(b'\xff\xfe') or content.startswith(b'\xfe\xff'):
+            text = content.decode('utf-16')
+        else:
+            text = content.decode('utf-8-sig', errors='ignore')
+        return json.loads(text)
 
     def handle(self, *args, **options):
         Product.objects.all().delete()
