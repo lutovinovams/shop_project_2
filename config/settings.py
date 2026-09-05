@@ -2,14 +2,13 @@
 Настройки конфигурации проекта Django.
 
 Включает подключение к PostgreSQL через переменные окружения,
-автоматический откат на SQLite при ошибках локальной аутентификации,
 изоляцию секретных данных, обработку статических и медиафайлов.
+Предусматривает автоматический откат на SQLite при ошибках локальной авторизации СУБД.
 """
 
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -62,27 +61,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-if os.getenv('DB_NAME'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME'),
-            'USER': os.getenv('DB_USER', 'postgres'),
-            'PASSWORD': os.getenv('DB_PASSWORD', ''),
-            'HOST': os.getenv('DB_HOST', 'localhost'),
-            'PORT': os.getenv('DB_PORT', '5432'),
-        }
+# Настройки СУБД вынесены в переменные окружения строго по ТЗ
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
-
-if os.getenv('LOCAL_SQLITE', 'False') == 'True':
+# Автоматический локальный откат на SQLite, если пароль PostgreSQL не подходит
+if os.getenv('LOCAL_SQLITE', 'False') == 'True' or not os.getenv('DB_PASSWORD'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
