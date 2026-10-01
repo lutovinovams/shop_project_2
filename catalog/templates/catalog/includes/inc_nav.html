@@ -1,11 +1,10 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<nav class="navbar">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="{% url 'catalog:product_list' %}">Skystore</a>
-        <div class="navbar-navms-auto">
-            <div class="navbar-nav">
-                <a class="nav-link" href="{% url 'catalog:product_list' %}">Каталог</a>
-                <a class="nav-link" href="{% url 'catalog:product_create' %}">Добавить товар</a>
-            </div>
+        <a class="navbar-brand" href="{% url 'catalog:product_list' %}">Skystore</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="{% url 'catalog:product_list' %}">Каталог</a>
+            <a class="nav-link" href="{% url 'blog:article_list' %}">Блог</a>
+            <a class="nav-link" href="{% url 'catalog:contacts' %}">Контакты</a>
         </div>
     </div>
 </nav>

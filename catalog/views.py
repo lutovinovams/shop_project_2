@@ -1,12 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from django.urls import reverse_lazy
 from catalog.models import Product
 
 
 class ProductListView(ListView):
     """
-    Контроллер-класс для отображения списка товаров на главной странице.
+    Контроллер для отображения списка товаров на главной странице.
     """
     model = Product
     template_name = 'catalog/product_list.html'
@@ -18,7 +17,7 @@ class ProductListView(ListView):
 
 class ProductDetailView(DetailView):
     """
-    Контроллер-класс для отображения детальной информации о товаре по его pk.
+    Контроллер для отображения детальной информации о товаре.
     """
     model = Product
     template_name = 'catalog/product_detail.html'
@@ -27,21 +26,23 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(CreateView):
     """
-    Контроллер-класс для создания нового товара через форму и сохранения в БД.
-    """
+    Контроллер для создания нового товара.
+    ```"""
     model = Product
     fields = ['name', 'description', 'image', 'category', 'price']
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
 
 
-def contacts(request):
+class ContactsTemplateView(TemplateView):
     """
-    Контроллер-функция для отображения страницы контактов.
+    Контроллер для отображения статичной страницы контактов с обработкой формы.
     """
-    if request.method == 'POST':
+    template_name = 'catalog/contacts.html'
+
+    def post(self, request, *args, **kwargs):
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         message = request.POST.get('message')
         print(f"Новое сообщение от {name} ({phone}): {message}")
-    return render(request, 'catalog/contacts.html')
+        return self.get(request, *args, **kwargs)
