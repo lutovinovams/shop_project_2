@@ -1,6 +1,5 @@
 """
-Главный маршрутизатор URL проекта, включающий маршруты приложения catalog,
-админ-панель и раздачу медиафайлов для режима разработки.
+Главный маршрутизатор проекта.
 """
 
 from django.conf import settings
@@ -11,4 +10,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('catalog.urls')),
+    path('blogs/', include('blog.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
