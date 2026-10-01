@@ -1,0 +1,31 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">Каталог товаров</h1>
+    <a href="{% url 'catalog:product_create' %}" class="btn btn-success">Добавить товар</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 220px; object-fit: cover;">
+            {% else %}
+                <div class="bg-light text-center py-5 text-muted" style="height: 220px; align-content: center;">Нет изображения</div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title fw-bold">{{ product.name }}</h5>
+                <!-- Задание 2: Обрезка описания до 100 символов -->
+                <p class="card-text text-muted">{{ product.description|truncatechars:100 }}</p>
+                <h6 class="text-success fw-bold">{{ product.price }} руб.</h6>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 p-3">
+                <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary w-100">Посмотреть товар</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
