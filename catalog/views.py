@@ -1,11 +1,17 @@
-from django.views.generic import ListView, DetailView, CreateView, TemplateView
-from django.urls import reverse_lazy
+"""
+Контроллеры для управления продуктами и статичными страницами приложения catalog.
+Использует Class-Based Views для обработки списков, деталей и CRUD-операций.
+"""
+
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
+from django.urls import reverse_lazy, reverse
 from catalog.models import Product
+from catalog.forms import ProductForm
 
 
 class ProductListView(ListView):
     """
-    Контроллер для отображения списка товаров на главной странице.
+    Контроллер-класс для отображения списка товаров на главной странице.
     """
     model = Product
     template_name = 'catalog/product_list.html'
@@ -17,7 +23,7 @@ class ProductListView(ListView):
 
 class ProductDetailView(DetailView):
     """
-    Контроллер для отображения детальной информации о товаре.
+    Контроллер-класс для отображения детальной информации о товаре по его pk.
     """
     model = Product
     template_name = 'catalog/product_detail.html'
@@ -26,17 +32,29 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(CreateView):
     """
-    Контроллер для создания нового товара.
-    ```"""
+    Контроллер-класс для создания нового товара через форму ProductForm.
+    """
     model = Product
-    fields = ['name', 'description', 'image', 'category', 'price']
+    form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
 
 
+class ProductUpdateView(UpdateView):
+    """
+    Контроллер-класс для редактирования товара с проверкой спам-валидации.
+    """
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+
+    def get_success_url(self):
+        return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
+
+
 class ContactsTemplateView(TemplateView):
     """
-    Контроллер для отображения статичной страницы контактов с обработкой формы.
+    Контроллер-класс для отображения страницы контактов и обработки формы.
     """
     template_name = 'catalog/contacts.html'
 
