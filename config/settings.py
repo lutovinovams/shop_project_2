@@ -2,8 +2,8 @@
 Настройки конфигурации проекта Django.
 
 Включает подключение к PostgreSQL через переменные окружения,
-изоляцию секретных данных, обработку статических и медиафайлов.
-Предусматривает автоматический откат на SQLite при ошибках локальной авторизации СУБД.
+автоматический откат на SQLite при ошибках локальной аутентификации,
+интеграцию кастомной модели пользователя и обработку медиафайлов.
 """
 
 import os
@@ -30,9 +30,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog',
-    'blog',  # Зарегистрировано новое приложение для блога
+    'blog',
+    'users',
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,7 +63,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Настройки СУБД вынесены в переменные окружения строго по ТЗ
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -75,7 +74,6 @@ DATABASES = {
     }
 }
 
-# Автоматический локальный откат на SQLite, если пароль PostgreSQL не подходит
 if os.getenv('LOCAL_SQLITE', 'False') == 'True' or not os.getenv('DB_PASSWORD'):
     DATABASES = {
         'default': {
@@ -92,8 +90,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'ru-ru'
+
 TIME_ZONE = 'UTC'
+
 USE_I18N = True
+
 USE_TZ = True
 
 STATIC_URL = 'static/'
@@ -102,3 +103,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.User'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+LOGIN_REDIRECT_URL = 'catalog:product_list'
+
+LOGIN_URL = 'users:login'
