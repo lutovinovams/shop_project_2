@@ -1,8 +1,10 @@
 """
 Контроллеры для управления продуктами и статичными страницами приложения catalog.
-Использует Class-Based Views для обработки списков, деталей и CRUD-операций.
+Использует Class-Based Views и декоратор login_required для защиты эндпоинтов.
 """
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
 from django.urls import reverse_lazy, reverse
 from catalog.models import Product
@@ -12,6 +14,7 @@ from catalog.forms import ProductForm
 class ProductListView(ListView):
     """
     Контроллер-класс для отображения списка товаров на главной странице.
+    Эндпоинт полностью доступен не аутентифицированному пользователю по ТЗ.
     """
     model = Product
     template_name = 'catalog/product_list.html'
@@ -21,15 +24,17 @@ class ProductListView(ListView):
         return Product.objects.all()
 
 
+@method_decorator(login_required, name='dispatch')
 class ProductDetailView(DetailView):
     """
-    Контроллер-класс для отображения детальной информации о товаре по его pk.
+    Контроллер-класс для отображения детальной информации о товаре.
     """
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
 
+@method_decorator(login_required, name='dispatch')
 class ProductCreateView(CreateView):
     """
     Контроллер-класс для создания нового товара через форму ProductForm.
@@ -40,6 +45,7 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy('catalog:product_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class ProductUpdateView(UpdateView):
     """
     Контроллер-класс для редактирования товара с проверкой спам-валидации.
@@ -54,7 +60,7 @@ class ProductUpdateView(UpdateView):
 
 class ContactsTemplateView(TemplateView):
     """
-    Контроллер-класс для отображения страницы контактов и обработки формы.
+    Контроллер-класс для отображения страницы контактов.
     """
     template_name = 'catalog/contacts.html'
 
