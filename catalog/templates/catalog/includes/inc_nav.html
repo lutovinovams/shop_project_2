@@ -5,6 +5,18 @@
             <a class="nav-link" href="{% url 'catalog:product_list' %}">Каталог</a>
             <a class="nav-link" href="{% url 'blog:article_list' %}">Блог</a>
             <a class="nav-link" href="{% url 'catalog:contacts' %}">Контакты</a>
+
+            {# Проверка статуса аутентификации пользователя #}
+            {% if user.is_authenticated %}
+                <span class="nav-link text-white-50" style="pointer-events: none;">{{ user.email }}</span>
+                <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link" style="background: none; border: none; padding: 0; cursor: pointer;">Выйти</button>
+                </form>
+            {% else %}
+                <a class="nav-link" href="{% url 'users:login' %}">Войти</a>
+                <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
+            {% endif %}
         </div>
     </div>
 </nav>
