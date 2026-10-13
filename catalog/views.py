@@ -14,6 +14,9 @@ from catalog.forms import ProductForm
 
 
 class ProductListView(ListView):
+    """
+    Контроллер-класс для отображения списка товаров на главной странице.
+    """
     model = Product
     template_name = 'catalog/product_list.html'
     context_object_name = 'products'
@@ -29,6 +32,9 @@ class ProductListView(ListView):
 
 @method_decorator(login_required, name='dispatch')
 class ProductDetailView(DetailView):
+    """
+    Контроллер-класс для отображения детальной информации о товаре.
+    """
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
@@ -36,6 +42,9 @@ class ProductDetailView(DetailView):
 
 @method_decorator(login_required, name='dispatch')
 class ProductCreateView(CreateView):
+    """
+    Контроллер-класс для создания нового товара с автоматической привязкой владельца.
+    """
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
@@ -48,15 +57,20 @@ class ProductCreateView(CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class ProductUpdateView(UpdateView):
+    """
+    Контроллер-класс для редактирования товара.
+    Доступен только создателю продукта или модератору с соответствующим правом.
+    """
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
-        if obj.owner != self.request.user:
-            raise PermissionDenied("Вы не являетесь владельцем этого продукта.")
-        return obj
+        user = self.request.user
+        if obj.owner == user or user.has_perm('catalog.can_unpublish_product'):
+            return obj
+        raise PermissionDenied("Вы не являетесь владельцем этого продукта и не имеете прав модератора.")
 
     def get_success_url(self):
         return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
@@ -64,6 +78,10 @@ class ProductUpdateView(UpdateView):
 
 @method_decorator(login_required, name='dispatch')
 class ProductDeleteView(DeleteView):
+    """
+    Контроллер-класс для удаления товара.
+    Доступен только создателю продукта или модератору с правом удаления.
+    """
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:product_list')
