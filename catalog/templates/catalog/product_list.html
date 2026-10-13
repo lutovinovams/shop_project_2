@@ -38,12 +38,12 @@
             <div class="card-footer bg-transparent border-top-0 p-3" style="display: flex; gap: 10px;">
                 <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary" style="flex: 1;">Посмотреть</a>
 
-                {# Задание 2: Кнопка редактирования отображается только для владельца продукта #}
-                {% if user == product.owner %}
+                {# Кнопка редактирования продукта отображается у создателя продукта и модератора #}
+                {% if user == product.owner or perms.catalog.can_unpublish_product %}
                     <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-outline-secondary" style="flex: 1; border-color: #ffc107; color: #ffc107;">Редактировать</a>
                 {% endif %}
 
-                {# Задание 1 и 2: Удалять продукты может владелец или модератор с правом удаления #}
+                {# Продукт может удалить создатель продукта или модератор с соответствующим правом #}
                 {% if user == product.owner or perms.catalog.delete_product %}
                     <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger" style="flex: 1;">Удалить</a>
                 {% endif %}
