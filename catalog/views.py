@@ -11,6 +11,9 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from catalog.models import Product
 from catalog.forms import ProductForm
+from catalog.services import get_products_by_category
+from catalog.models import Category
+
 
 
 class ProductListView(ListView):
@@ -106,3 +109,26 @@ class ContactsTemplateView(TemplateView):
         message = request.POST.get('message')
         print(f"Новое сообщение от {name} ({phone}): {message}")
         return self.get(request, *args, **kwargs)
+
+
+class CategoryProductListView(ListView):
+    """
+    Представление для отображения продуктов конкретной категории с использованием сервисного кеша.
+    """
+    template_name = 'catalog/category_product_list.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        # Принимает ID из URL во вьюшку и вызывает сервис
+        self.category_id = self.kwargs.get('category_id')
+        return get_products_by_category(self.category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Получаем имя категории из БД для корректного отображения в шаблоне
+        try:
+            category = Category.objects.get(pk=self.category_id)
+            context['category_name'] = category.name
+        except Category.DoesNotExist:
+            context['category_name'] = "Неизвестная категория"
+        return context
