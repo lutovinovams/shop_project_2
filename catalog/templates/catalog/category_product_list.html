@@ -1,0 +1,33 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+{# Шаблон для отображения отфильтрованных по категориям продуктов #}
+<div class="mb-4">
+    <h1 class="fw-bold">Категория: {{ category_name }}</h1>
+    <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-secondary">Назад к общему каталогу</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 220px; object-fit: cover;">
+            {% else %}
+                <div class="bg-light text-center py-5 text-muted" style="height: 220px; align-content: center;">Нет изображения</div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title fw-bold">{{ product.name }}</h5>
+                <p class="card-text text-muted">{{ product.description|truncatechars:100 }}</p>
+                <h6 class="text-success fw-bold">{{ product.price }} руб.</h6>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 p-3">
+                <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary w-100">Посмотреть</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">В этой категории пока нет опубликованных товаров.</p>
+    {% endfor %}
+</div>
+{% endblock %}
